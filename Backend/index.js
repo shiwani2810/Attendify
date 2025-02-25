@@ -7,10 +7,9 @@ import userRoute from "./routes/User.js";
 import AdminJS from "adminjs";
 import AdminJSExpress from "@adminjs/express";
 import * as AdminJSMongoose from "@adminjs/mongoose";
-import { User } from "./Models/User.js";
+// Removed the duplicate import of User
+import User from './Models/User.js'; 
 import { AttendanceLogs } from "./models/attendanceLogs.js";
-import User from './Models/User.js';
-
 
 const app = express();
 app.use(cors());
@@ -28,16 +27,12 @@ app.get("/hello", (req, res) => {
   res.send("Hello world");
 });
 
-//app.get("/:id", (req, res) => {
-//  res.send("reel");
-//});
-
 app.post("/register", async (req, res) => {
   console.log("Someone is trying to register...");
   const { name, password, email } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (user) return res.status(400).send({ message: "User already exist" });
+    if (user) return res.status(400).send({ message: "User already exists" });
 
     const encryptedPassword = bcrypt.hashSync(password, 10);
 
@@ -45,7 +40,7 @@ app.post("/register", async (req, res) => {
 
     await newUser.save();
 
-    return res.status(201).send("Registered succesfully");
+    return res.status(201).send("Registered successfully");
   } catch (error) {
     console.log(error);
     return res
@@ -53,17 +48,18 @@ app.post("/register", async (req, res) => {
       .send({ message: "Internal error", error: error.message });
   }
 });
+
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (user.verify(password)) {
+    if (user && user.verify(password)) {
       const token = jwt.sign({ id: user._id }, "Mysecretkey", {
         expiresIn: "1h",
       });
-      return res.status(200).send({ message: "login success", token });
+      return res.status(200).send({ message: "Login success", token });
     } else {
-      return res.status(401).send({ message: "wrong email or password" });
+      return res.status(401).send({ message: "Wrong email or password" });
     }
   } catch (error) {
     console.log(error);
@@ -80,7 +76,7 @@ app.get("/userprofile", async (req, res) => {
       const decodedUser = await jwt.verify(authorization, "Mysecretkey");
       const user = await User.findById(decodedUser.id).select("name email");
 
-      return res.status(404).send({ message: "Fetched user", user });
+      return res.status(200).send({ message: "Fetched user", user });
     } else {
       return res.status(404).send({ message: "Auth required" });
     }
@@ -98,22 +94,25 @@ mongoose
   )
   .then(() => {
     console.log("DB connected");
+    
+    // Register AdminJS Adapter for Mongoose
     AdminJS.registerAdapter({
-      Resource:AdminJSMongoose.Resource,
-      Database:AdminJSMongoose.Database
-    })
+      Resource: AdminJSMongoose.Resource,
+      Database: AdminJSMongoose.Database
+    });
+
     const admin = new AdminJS({
-      resources: [User,AttendanceLogs],
+      resources: [User, AttendanceLogs],
     });
 
     const adminRouter = AdminJSExpress.buildRouter(admin);
     app.use(admin.options.rootPath, adminRouter);
     
-    app.listen( process.env.PORT || 3000, (err) => {
-      if (err) console.log("Error occured" + err);
+    app.listen(process.env.PORT || 3000, (err) => {
+      if (err) console.log("Error occurred: " + err);
       else console.log("Server started on port 3000");
     });
   })
   .catch((err) => {
-    console.log(err);
+    console.log("Error connecting to DB:", err);
   });
