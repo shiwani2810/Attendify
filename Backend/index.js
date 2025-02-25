@@ -9,6 +9,9 @@ import AdminJSExpress from "@adminjs/express";
 import * as AdminJSMongoose from "@adminjs/mongoose";
 import { User } from "./models/user.js";  // Corrected import path
 import { AttendanceLogs } from "./models/attendanceLogs.js";  // Ensure attendanceLogs.js exists and is correct
+import env from "dotenv";
+
+env.config();
 
 const app = express();
 app.use(cors());
@@ -48,7 +51,7 @@ app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (user && user.verify(password)) {  // Ensure verify method exists in your User model
-      const token = jwt.sign({ id: user._id }, "Mysecretkey", { expiresIn: "1h" });
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET , { expiresIn: "1h" });
       return res.status(200).send({ message: "Login success", token });
     } else {
       return res.status(401).send({ message: "Wrong email or password" });
@@ -76,7 +79,7 @@ app.get("/userprofile", async (req, res) => {
 });
 
 mongoose
-  .connect("mongodb+srv://shiwi2810:Shiwani2810@cluster0.kcmgm.mongodb.net/AttendanceMonitoring?retryWrites=true&w=majority&appName=Cluster0")
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("DB connected");
 
