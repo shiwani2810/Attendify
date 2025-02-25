@@ -10,6 +10,7 @@ import * as AdminJSMongoose from "@adminjs/mongoose";
 import { User } from "./Models/User.js";
 import { AttendanceLogs } from "./models/attendanceLogs.js";
 
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -106,7 +107,8 @@ mongoose
 
     const adminRouter = AdminJSExpress.buildRouter(admin);
     app.use(admin.options.rootPath, adminRouter);
-    app.listen(3000, (err) => {
+    
+    app.listen( process.env.PORT || 3000, (err) => {
       if (err) console.log("Error occured" + err);
       else console.log("Server started on port 3000");
     });
