@@ -9,6 +9,7 @@ import AdminJSExpress from "@adminjs/express";
 import * as AdminJSMongoose from "@adminjs/mongoose";
 import { User } from "./Models/User.js";
 import { AttendanceLogs } from "./models/attendanceLogs.js";
+import User from './Models/User.js';
 
 
 const app = express();
