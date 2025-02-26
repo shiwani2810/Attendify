@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { User } from "../Models/User.js";
+import { User } from "../models/User.js";
 import distance from "euclidean-distance";
 
 export const login = async (req, res) => {
