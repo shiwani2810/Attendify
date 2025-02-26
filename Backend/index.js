@@ -9,7 +9,7 @@ import AdminJSExpress from "@adminjs/express";
 import * as AdminJSMongoose from "@adminjs/mongoose";
 //import { User } from "./models/user.js";  
 import { User } from "./models/User.js"; 
-import { AttendanceLogs } from "./models/attendanceLogs.js";  
+import { AttendanceLogs } from "./models/AttendanceLogs.js";  
 import dotenv from "dotenv";
 
 dotenv.config();

@@ -1,4 +1,4 @@
-import { AttendanceLogs } from "../models/attendanceLogs.js";
+import { AttendanceLogs } from "../models/AttendanceLogs.js";
 
 export const logAttendance = async (req, res) => {
   try {
