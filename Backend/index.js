@@ -12,15 +12,22 @@ import { User } from "./models/User.js";
 import { AttendanceLogs } from "./models/AttendanceLogs.js";  
 import dotenv from "dotenv";
 
+
+
+
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || "defaultsecret";  
 
+
+
 app.use(cors());
 app.use(express.json());
 app.use("/user", userRoute);
+
+
 
 app.get("/", (req, res) => {
   res.send("Hello " + (req.query.name || "Guest"));
@@ -97,6 +104,8 @@ mongoose
 
     const adminRouter = AdminJSExpress.buildRouter(admin);
     app.use(admin.options.rootPath, adminRouter);
+
+    
 
     app.listen(PORT, () => {
       console.log(`🚀 Server started on port ${PORT}`);
